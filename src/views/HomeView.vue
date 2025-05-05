@@ -675,11 +675,11 @@
                   <path fill="#BCC49A" d="M173.458,179.502c-4.962,0-9-4.039-9-9v-68.125c0-4.961,4.038-9,9-9h254.966c4.963,0,9,4.039,9,9v68.125
                     					c0,4.961-4.037,9-9,9H173.458z" />
                   <text id="display" text-anchor="end" transform="matrix(1 0 0 1 420 164)" font-family="'Digital-7'"
-                    font-size="50">0</text>
+                    font-size="50">{{ display }}</text>
                   <text id="hora" text-anchor="start" transform="matrix(1 0 0 1 175 113)" font-family="'Digital-7'"
-                    font-size="17.0079"></text>
+                    font-size="17.0079">{{ timeEl }}</text>
                   <text id="data" text-anchor="end" transform="matrix(1 0 0 1 420 113)" font-family="'Digital-7'"
-                    font-size="17.0079"></text>
+                    font-size="17.0079">{{ dateEl }}</text>
                   <path fill="#E0E0E0" d="M428.424,91.385H173.458c-6.616,0-12,5.385-12,12v68.125c0,6.615,5.384,12,12,12h254.966
                     					c6.617,0,12-5.385,12-12v-68.125C440.424,96.77,435.041,91.385,428.424,91.385z M437.424,171.51c0,4.961-4.037,9-9,9H173.458
                     					c-4.962,0-9-4.039-9-9v-68.125c0-4.961,4.038-9,9-9h254.966c4.963,0,9,4.039,9,9V171.51z" />
@@ -1756,9 +1756,65 @@
 </template>
 
 <script setup>
-import CalcController from '@/scripts/CalcController.js'
+import { ref, } from 'vue'
+const display = ref('');
+const dateEl = ref('');
+const timeEl = ref('');
 
-const calculator = new CalcController();
+class CalcController {
+  constructor() {
+    this._locale = 'pt-BR'
+    this.initialize()
+  }
+
+  initialize() {
+    this.setDisplayDateTime()
+    setInterval(() => {
+      this.setDisplayDateTime()
+    }, 1000);
+  }
+
+  initButtonsEvents(){
+    document.querySelectorAll('#buttons > g, #parts > g')
+  }
+
+  setDisplayDateTime(){
+    this.displayDate = this.currentDate.toLocaleDateString(this._locale)
+    this.displayTime = this.currentDate.toLocaleTimeString(this._locale)
+  }
+
+  get displayTime() {
+    return timeEl.value
+  }
+  set displayTime(value) {
+    timeEl.value = value
+  }
+
+  get displayDate() {
+    return dateEl.value
+  }
+  set displayDate(value) {
+    dateEl.value = value
+  }
+
+  get displayCalc() {
+    return display.value
+  }
+
+  set displayCalc(valor) {
+    display.value = valor
+  }
+
+  get currentDate() {
+    return new Date()
+  }
+
+  set currentDate(valor) {
+    dateEl.value = valor
+  }
+}
+
+window.calculator = new CalcController();
 
 
 </script>
