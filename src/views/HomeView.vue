@@ -1756,15 +1756,20 @@
 </template>
 
 <script setup>
-import { ref, } from 'vue'
+import { onMounted, ref, } from 'vue'
 const display = ref('');
 const dateEl = ref('');
 const timeEl = ref('');
+
+onMounted(() => {
+  window.calculator = new CalcController();
+})
 
 class CalcController {
   constructor() {
     this._locale = 'pt-BR'
     this.initialize()
+    this.initButtonsEvents()
   }
 
   initialize() {
@@ -1774,11 +1779,23 @@ class CalcController {
     }, 1000);
   }
 
-  initButtonsEvents(){
-    document.querySelectorAll('#buttons > g, #parts > g')
+  initButtonsEvents() {
+    let buttons = document.querySelectorAll('#buttons > g, #parts > g');
+
+    buttons.forEach(btn => {
+      this.addEventListenerAll(btn, 'click drag', () => {
+        console.log(btn.className.baseVal.replace('btn-', ''))
+      })
+    })
   }
 
-  setDisplayDateTime(){
+  addEventListenerAll(element, events, fn) {
+    events.split(' ').forEach(event => {
+      element.addEventListener(event, fn, false)
+    })
+  }
+
+  setDisplayDateTime() {
     this.displayDate = this.currentDate.toLocaleDateString(this._locale)
     this.displayTime = this.currentDate.toLocaleTimeString(this._locale)
   }
@@ -1813,8 +1830,6 @@ class CalcController {
     dateEl.value = valor
   }
 }
-
-window.calculator = new CalcController();
 
 
 </script>
