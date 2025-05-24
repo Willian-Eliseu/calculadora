@@ -1987,7 +1987,15 @@ class CalcController {
   }
 
   getResult() {
-    return eval(this._operation.join(''));
+    try {
+      return eval(this._operation.join(''));
+    } catch (e) {
+      this.clearAll()
+      setTimeout(() => {
+        this.setError()
+      }, 1);
+    }
+
   }
 
   calc() {
@@ -2086,7 +2094,11 @@ class CalcController {
   }
 
   set displayCalc(valor) {
-    display.value = valor
+    if(valor.toString().length > 10){
+      this.setError()
+    }else{
+      display.value = valor
+    }
   }
 
   get currentDate() {
